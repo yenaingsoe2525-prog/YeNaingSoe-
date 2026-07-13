@@ -1,7 +1,7 @@
-# YeNaingSoe-
-    Telegram bot for KY Game Shop * Python Telegram Auto Reply Bot * KY UC DIA Shop Bot
-from telegram import Update
-from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
+Telegram Auto Reply Bot
 
-TOKEN = "YOUR_BOT_TOKEN"
-8567536507:AAF_Gx-KyndHkqk_GhHbDJzyXcMe8IxAvZs
+Rules:
+- Reply to all text messages from group members.
+- Ignore messages that contain only numbers.
+- Do not reply to PUBG Player IDs or any numeric IDs.
+- Use a fixed warning message for every text message.
