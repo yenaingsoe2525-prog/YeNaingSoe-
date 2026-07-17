@@ -1,0 +1,79 @@
+import re
+import logging
+from telegram import Update
+from telegram.ext import (
+    Application,
+    MessageHandler,
+    ContextTypes,
+    filters,
+)
+
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+)
+
+AUTO_REPLY = """
+⚠️ သတိ လုပ်ရန် ⚠️
+
+❌ GP မှာ စာမရေးပါနဲ့ ❌
+
+⚠️ စာလာပို့ပါက Owner မဟုတ်ပါ တာဝန်မယူပါ ⚠️
+
+🎮 Game ID နှင့် ငွေလွှဲပြေစာများကိုသာ GP တွင် ပို့ပေးပါ။
+📱 ယခု Phone တစ်လုံးသာ အသုံးပြုပါသည်။
+
+💳 Payment
+KPay / Wave / AYA / APay
+
+👤 Ye Naing Soe
+📞 09776649598
+
+👉 Owner - @YENAINGSOE4007
+"""
+from telegram.ext import ContextTypes
+
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message:
+        return
+
+    # Photo / Document (ပြေစာ) ပို့ရင် မပြန်
+    if update.message.photo or update.message.document:
+        return
+
+    member = await update.effective_chat.get_member(update.effective_user.id)
+
+    # Owner / Admin / Bot => မပြန်
+    if member.status in ["administrator", "creator"] or update.effective_user.is_bot:
+        return
+
+    text = (update.message.text or "").strip()
+
+    # Game ID ပုံစံများ => မပြန်
+    if re.fullmatch(r"\d{8,12}", text):
+        return
+
+    # 12345678(12345) နဲ့ နောက်မှာ ဘာရေးရေး => မပြန်
+    if re.fullmatch(r"\d{8,12}\(\d+\).*", text):
+        return
+
+    # 12345678 UC => မပြန်
+    if re.fullmatch(r"\d{8,12}\s*[Uu][Cc]", text):
+        return
+
+    # ကျန်တာအားလုံး => သတိပေးစာပြန်
+    await update.message.reply_text(AUTO_REPLY)
+
+def main():
+    TOKEN = "8675516914:AAF7PUyf-yb6s04qFMNyTKGNIfl3b3p2Hq0"
+
+    application = Application.builder().token(TOKEN).build()
+
+    application.add_handler(
+        MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
+    )
+
+    application.run_polling()
+if __name__ == "__main__":
+    main()
+     # main.py
